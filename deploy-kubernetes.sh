@@ -77,6 +77,9 @@ azure  network nic set --network-security-group-name $NSG $RG nic-${MASTER}
 
         cluster_fip=$(azure network public-ip list $RG | awk "/$FIP/ {print \$8  \" \" \$10}")
         echo "Cluster FIP at ${cluster_fip}"
+        priv_ip=`azure network nic show $RG nic-${MASTER} | awk -F":" '/Private IP address/ { print $3}'`
+        echo "Private IP VM ${MASTER} ${priv_ip}"
+
         i=1
         while [ $i -le $NB_WORKERS ]
         do
