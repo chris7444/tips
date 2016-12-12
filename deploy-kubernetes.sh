@@ -66,10 +66,10 @@ WORKER_SIZE="Basic_A1"
 #
 # Create NSG and assign to master VM
 #
-azure network nsg create $RG $NSG westeurope
-azure  network nsg rule create --protocol tcp --destination-port-range 22          --access allow --direction inbound $RG $NSG  ssh    100
-azure  network nsg rule create --protocol tcp --destination-port-range 31900-31999 --access allow --direction inbound $RG $NSG  myapps 110
-azure  network nic set --network-security-group-name $NSG $RG nic-${MASTER}
+#azure network nsg create $RG $NSG westeurope
+#azure  network nsg rule create --protocol tcp --destination-port-range 22          --access allow --direction inbound $RG $NSG  ssh    100
+#azure  network nsg rule create --protocol tcp --destination-port-range 31900-31999 --access allow --direction inbound $RG $NSG  myapps 110
+#azure  network nic set --network-security-group-name $NSG $RG nic-${MASTER}
 
 #
 # log something
