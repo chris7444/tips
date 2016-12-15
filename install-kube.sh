@@ -1,5 +1,9 @@
+#
+# set proxy = yes if you are operating behind a firewall and set the *_proxy environment variables accordingly (see below)
+#
 master_ip=10.244.62.4
-proxy="yes"
+proxy="no"
+
 echo proxy=$proxy
 echo master_ip=$master_ip
 #

@@ -1,0 +1,15 @@
+#
+# docker-machine RC file
+#
+export AZURE_SUBSCRIPTION_ID=$(azure account list | awk "/Visual Studio Ultimate/ {print \$7}")
+export AZURE_ENVIRONMENT=AzurePublicCloud
+export AZURE_IMAGE=canonical:UbuntuServer:16.04.0-LTS:latest
+export AZURE_LOCATION=westeurope
+export AZURE_RESOURCE_GROUP=docker-machine
+export AZURE_SIZE=Basic_A0
+export AZURE_SSH_USER=docker-user
+export AZURE_VNET=docker-machine
+export AZURE_SUBNET=docker-machine
+export AZURE_SUBNET_PREFIX=192.168.0.0/16
+export AZURE_AVAILABILITY_SET=docker-machine
+
