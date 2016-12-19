@@ -1,6 +1,25 @@
-IMAGE="Canonical:UbuntuServer:16.04-LTS:latest"
-LOCATION="westeurope"
+#
+# Deploy a docker swarm on azure
+#
+
+
+# we always deploy one master, the number of workers can be changed
+NB_WORKERS=2
+
+#
+# we deploy in a resource group, it is easier to delete all resources when we want to release the resources
+#
 RG="docker"
+
+#
+# Deploy in West Europe
+#
+LOCATION="westeurope"
+
+#
+# Resources
+#
+IMAGE="Canonical:UbuntuServer:16.04-LTS:latest"
 
 VNET="vnet-${RG}"
 VNETPREFIX="10.6.0.0/16"
@@ -11,9 +30,6 @@ FIP="fip-${RG}"
 MFQDN=${FIP}.${LOCATION}.cloudapp.azure.com
 
 NSG="nsg-${RG}"
-
-# we only deploy docker no worker needed
-NB_WORKERS=2
 
 MASTER="manager-${RG}"
 MASTER_SIZE="Basic_A0"
@@ -47,7 +63,7 @@ EOF
 	azure network vnet subnet create $RG $VNET $SUBNET $CIDR
 
         #
-        # first VM is created with a FIP
+        # first VM (ie the swarm master) is created with a FIP
         #
         azure vm create  \
             --custom-data=$YAML \
@@ -84,16 +100,16 @@ EOF
 #azure  network nsg rule create --protocol tcp --destination-port-range 31900-31999 --access allow --direction inbound $RG $NSG  myapps 110
 #azure  network nic set --network-security-group-name $NSG $RG nic-${MASTER}
 
+#
+# initialize the cluster/swarm
+#
 master_ip=`azure network nic show $RG nic-${MASTER} | awk -F":" '/Private IP address/ { print $3}'`
-
-# create the swarm on the mastr
 ssh-keygen -R ${MFQDN}
 ssh -A ${ADMIN_USER}@${MFQDN}  -o StrictHostKeyChecking=no ifconfig eth0
 ssh -A ${ADMIN_USER}@${MFQDN}  -o StrictHostKeyChecking=no docker swarm init --advertise-addr ${master_ip}
 
-# workers join the swarm
+# Configure the other VMs as workers
 token=$(ssh -A ${ADMIN_USER}@${MFQDN} docker swarm join-token --quiet worker)
-
 i=1
 while [ $i -le $NB_WORKERS ]
 do
@@ -118,4 +134,4 @@ do
     echo "Private IP VM ${WORKER}${i} ${priv_ip}"
     ((i++))
 done
-
+ssh -A ${ADMIN_USER}@${MFQDN}  -o StrictHostKeyChecking=no docker nodes ls
