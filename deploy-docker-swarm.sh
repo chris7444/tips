@@ -31,10 +31,10 @@ MFQDN=${FIP}.${LOCATION}.cloudapp.azure.com
 
 NSG="nsg-${RG}"
 
-MASTER="manager-${RG}"
+MASTER="${RG}-manager"
 MASTER_SIZE="Basic_A0"
 
-WORKER="worker-${RG}"
+WORKER="${RG}-worker"
 WORKER_SIZE="Basic_A0"
 
 ADMIN_USER=core
@@ -75,7 +75,6 @@ EOF
             --image-urn $IMAGE \
             $RG vm-${MASTER} $LOCATION Linux
 
-        sleep 60
         #
         # Other VMS created without a FIP
         #
@@ -99,6 +98,12 @@ EOF
 #azure  network nsg rule create --protocol tcp --destination-port-range 22          --access allow --direction inbound $RG $NSG  ssh    100
 #azure  network nsg rule create --protocol tcp --destination-port-range 31900-31999 --access allow --direction inbound $RG $NSG  myapps 110
 #azure  network nic set --network-security-group-name $NSG $RG nic-${MASTER}
+
+#
+# it seems that apt install docker.io is aynchronous, in some cases the docker command is not available especially in thee lastly provisionned VM
+#
+echo sleeping 2mns for docker installation to finish
+sleep 120
 
 #
 # initialize the cluster/swarm
@@ -134,4 +139,4 @@ do
     echo "Private IP VM ${WORKER}${i} ${priv_ip}"
     ((i++))
 done
-ssh -A ${ADMIN_USER}@${MFQDN}  -o StrictHostKeyChecking=no docker nodes ls
+ssh -A ${ADMIN_USER}@${MFQDN}  -o StrictHostKeyChecking=no docker node ls
