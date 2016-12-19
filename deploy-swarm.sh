@@ -1,18 +1,21 @@
 #
-# Create the Key-Value store "cluster" VM
+# Create a docker swarm with an external KV store
 #
-
-docker-machine create -d azure mh-keystore
+swarm_size=2			# size of the swarm including the master
+vm_swarm=vm-swarm		# name of the VMs in the swarm	
+vm_keystore=vm-keystore		# name of the external KV store
 
 #
-# Apparently there is a bug in the NSG assigned to this VM, port 8500 is not open
+# Create the KV store VM. We need to open port 8500 (22 and 2376 are opened by default by docker-machine
 #
-#echo Opening port 8500 on the key-value store 
-azure  network nsg rule create --protocol tcp --destination-port-range 8500  --access allow --direction inbound $AZURE_RESOURCE_GROUP mh-keystore-firewall  consul    500
+docker-machine create -d azure --azure-open-port 8500 ${vm_keystore}
 
+#azure  network nsg rule create --protocol tcp --destination-port-range 8500  --access allow --direction inbound $AZURE_RESOURCE_GROUP ${vm_keystore}-firewall  consul    500
+
+sleep 60
 
 # land the key-store cluster container
-eval "$(docker-machine env mh-keystore)"
+eval "$(docker-machine env ${vm_keystore})"
 docker run -d \
     -p "8500:8500" \
     -h "consul" \
@@ -21,24 +24,27 @@ docker run -d \
 #
 # Create the swarm master
 #
-docker-machine create \
+  i=0
+  docker-machine create \
     -d azure \
      --swarm --swarm-master \
-     --swarm-discovery="consul://$(docker-machine ip mh-keystore):8500" \
-     --engine-opt="cluster-store=consul://$(docker-machine ip mh-keystore):8500" \
+     --swarm-discovery="consul://$(docker-machine ip ${vm_keystore}):8500" \
+     --engine-opt="cluster-store=consul://$(docker-machine ip ${vm_keystore}):8500" \
      --engine-opt="cluster-advertise=eth0:2376" \
-     mhs-demo0
-
+     ${vm_swarm}$i
+  ((i++))
 #
 # Add Additional docker hosts
 #
-
-docker-machine create \
+while [ $i -lt $swarm_size ]
+do
+  docker-machine create \
     -d azure \
     --swarm \
-    --swarm-discovery="consul://$(docker-machine ip mh-keystore):8500" \
-    --engine-opt="cluster-store=consul://$(docker-machine ip mh-keystore):8500" \
+    --swarm-discovery="consul://$(docker-machine ip ${vm_keystore}):8500" \
+    --engine-opt="cluster-store=consul://$(docker-machine ip ${vm_keystore}):8500" \
     --engine-opt="cluster-advertise=eth0:2376" \
-    mhs-demo1
-
+    ${vm_swarm}$i
+    ((i++))
+done
 
