@@ -32,10 +32,12 @@ MFQDN=${FIP}.${LOCATION}.cloudapp.azure.com
 NSG="nsg-${RG}"
 
 MASTER="${RG}-manager"
-MASTER_SIZE="Basic_A0"
+MASTER_SIZE="Basic_A1"
 
 WORKER="${RG}-worker"
-WORKER_SIZE="Basic_A0"
+WORKER_SIZE="Basic_A1"
+WORKER_SIZE="Standard_A1_v2"
+AVAILABILITY_SET="avs-${RG}"
 
 ADMIN_USER=core
 YAML="/tmp/cloud-config.yml"
@@ -88,6 +90,7 @@ EOF
                 --admin-username ${ADMIN_USER} --ssh-publickey-file $CERT \
                 --nic-name nic-${WORKER}$i   --vnet-name $VNET --vnet-subnet-name $SUBNET \
                 --image-urn $IMAGE \
+                --availset-name ${AVAILABILITY_SET} \
                 $RG vm-${WORKER}$i $LOCATION Linux
             ((i++))
         done
