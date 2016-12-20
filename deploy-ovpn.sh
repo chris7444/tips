@@ -28,7 +28,7 @@ MFQDN=${FIP}.${LOCATION}.cloudapp.azure.com
 NSG="nsg-${RG}"
 
 MASTER="${RG}"
-MASTER_SIZE="Basic_A1"
+MASTER_SIZE="Basic_A0"
 
 ADMIN_USER=chris
 CERT="azure.pub"
