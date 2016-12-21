@@ -5,39 +5,36 @@
 #
 # we deploy in a resource group, it is easier to delete all resources when we want to release the resources
 #
-RG="ovpn"
-
-#
-# Deploy in West Europe
-#
-LOCATION="westeurope"
+RG="ovpn"					# this is the resource group
+LOCATION="westeurope"				# we deploy in west europe
 
 #
 # Resources
 #
 IMAGE="Canonical:UbuntuServer:16.04-LTS:latest"
+VNET="vnet-${RG}"				# network to be deployed
+VNETPREFIX="10.5.0.0/16"			# with the following address space
+SUBNET="subnet-${RG}"				# name of subnet
+CIDR="10.5.0.0/16"				# CIDR for the subnet
+FIP="fip-${RG}"					# DNS name for the FIP
+MFQDN=${FIP}.${LOCATION}.cloudapp.azure.com	# FQDN of FIP
+NSG="nsg-${RG}"					# network security group
+MASTER="${RG}"					# name of the VM to be deployed
+MASTER_SIZE="Basic_A0"				# Size of the VM to be deployed
+ADMIN_USER=chris				# Admin user name
+CERT="azure.pub"				# SSH KEY to be pushed in the VM
 
-VNET="vnet-${RG}"
-VNETPREFIX="10.5.0.0/16"
-
-SUBNET="subnet-${RG}"
-CIDR="10.5.0.0/16"
-FIP="fip-${RG}"
-MFQDN=${FIP}.${LOCATION}.cloudapp.azure.com
-
-NSG="nsg-${RG}"
-
-MASTER="${RG}"
-MASTER_SIZE="Basic_A0"
-
-ADMIN_USER=chris
-CERT="azure.pub"
-
+#
+# cloud config file 
+#
 YAML="/tmp/cloud-config.yml"
 cat <<EOF >$YAML
 #cloud-config
+package_upgrade: true
 packages:
   - docker.io
+  - openvpn
+  - easy-rsa
 runcmd:
   - usermod -a -G docker ${ADMIN_USER}
 EOF
@@ -51,22 +48,22 @@ EOF
 #
 # Ready to go
 #
-	azure group create $RG $LOCATION
-	azure network vnet create --address-prefixes $VNETPREFIX $RG $VNET $LOCATION
-	azure network vnet subnet create $RG $VNET $SUBNET $CIDR
+azure group create $RG $LOCATION
+azure network vnet create --address-prefixes $VNETPREFIX $RG $VNET $LOCATION
+azure network vnet subnet create $RG $VNET $SUBNET $CIDR
 
-        #
-        # first VM (ie the swarm master) is created with a FIP
-        #
-        azure vm create  \
-            --custom-data=$YAML \
-            --disable-boot-diagnostics \
-            --vm-size=$MASTER_SIZE \
-            --admin-username ${ADMIN_USER} --ssh-publickey-file $CERT \
-            --nic-name nic-$MASTER  --vnet-name $VNET --vnet-subnet-name $SUBNET \
-            --public-ip-name $FIP --public-ip-domain-name $FIP \
-            --image-urn $IMAGE \
-            $RG vm-${MASTER} $LOCATION Linux
+#
+# first VM (ie the swarm master) is created with a FIP
+#
+azure vm create  \
+  --custom-data=$YAML \
+  --disable-boot-diagnostics \
+  --vm-size=$MASTER_SIZE \
+  --admin-username ${ADMIN_USER} --ssh-publickey-file $CERT \
+  --nic-name nic-$MASTER  --vnet-name $VNET --vnet-subnet-name $SUBNET \
+  --public-ip-name $FIP --public-ip-domain-name $FIP \
+  --image-urn $IMAGE \
+  $RG vm-${MASTER} $LOCATION Linux
 
 #
 # Create NSG and assign to master VM
