@@ -11,7 +11,6 @@ SUBNET="subnet-kube"
 FIP="fip-kube"
 
 
-YAML="cloud-config.yml"
 CERT="azure.pub"
 
 NB_WORKERS=2
@@ -24,7 +23,7 @@ WORKER="worker"
 WORKER_SIZE="Basic_A1"
 
 #
-# delete evrything from the previous run
+# delete everything from the previous run
 #
     azure group delete -q $RG
 

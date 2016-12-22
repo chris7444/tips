@@ -10,8 +10,6 @@ CIDR="10.6.0.0/16"
 SUBNET="subnet-kube"
 FIP="fip-kube"
 
-
-YAML="cloud-config.yml"
 CERT="azure.pub"
 
 # we only deploy docker no worker needed

@@ -1,4 +1,13 @@
 #
+# Make sure the AZURE_* variables are defined
+#
+if [ -z $AZURE_SUBSCRIPTION_ID ]
+then
+   echo "Please update the file azure.rc then source it before running this file"
+   exit 1
+fi
+
+#
 # Create a docker swarm with an external KV store
 #
 swarm_size=2			# size of the swarm including the master

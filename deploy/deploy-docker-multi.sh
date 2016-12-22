@@ -16,7 +16,6 @@ SUBNET="subnet-kube"
 FIP="fip-kube"
 
 
-YAML="cloud-config.yml"
 CERT="azure.pub"
 
 # we only deploy docker no worker needed
@@ -29,8 +28,8 @@ MASTER_SIZE="Basic_A1"
 WORKER="worker"
 WORKER_SIZE="Basic_A1"
 
-YAMLETCD="cloud-config-etcd.yml"
-YAMLWORKER="cloud-config-worker.yml"
+YAMLETCD="/tmp/cloud-config-etcd.yml"
+YAMLWORKER="/tmp/cloud-config-worker.yml"
 
 WORKERS=0
 

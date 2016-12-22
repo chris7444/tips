@@ -9,7 +9,7 @@ SUBNET="subnet-coreos"
 FIP="fip-coreos"
 
 
-YAML="cloud-config.yml"
+YAML="/tmp/cloud-config.yml"
 CERT="azure.pub"
 
 CLUSTER_SIZE=3

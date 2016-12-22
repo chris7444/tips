@@ -15,8 +15,8 @@ FIP="fip-coreos"
 FIPETCD="fip-etcdserver"
 CERT="azure.pub"
 
-YAMLETCD="cloud-config-etcd.yml"
-YAMLWORKER="cloud-config-worker.yml"
+YAMLETCD="/tmp/cloud-config-etcd.yml"
+YAMLWORKER="/tmp/cloud-config-worker.yml"
 
 WORKERS=2
 

@@ -1,6 +1,9 @@
 #
 # docker-machine RC file
 #
+#
+# source this file before using deploy-docker-machine.sh
+#
 export AZURE_SUBSCRIPTION_ID=$(azure account list | awk "/Visual Studio Ultimate/ {print \$7}")
 export AZURE_ENVIRONMENT=AzurePublicCloud
 export AZURE_IMAGE=canonical:UbuntuServer:16.04.0-LTS:latest
