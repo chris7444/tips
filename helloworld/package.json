@@ -1,0 +1,14 @@
+{
+  "name": "HelloWorld",
+  "version": "1.0.0",
+  "description": "HelloWorld on node.js on Docker",
+  "author": "Christophe Lehy <christophe.lehy@hpe.com>",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.13.3",
+    "ip": "^1.1.4"
+  }
+}
