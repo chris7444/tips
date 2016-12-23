@@ -1,7 +1,7 @@
 #
 # set proxy = yes if you are operating behind a firewall and set the *_proxy environment variables accordingly (see below)
 #
-master_ip=10.244.62.4
+master_ip=10.6.0.4
 proxy="no"
 
 echo proxy=$proxy
@@ -51,4 +51,5 @@ fi
 
 #kubeadm init --use-kubernetes-version v1.4.1 --api-advertise-addresses 10.244.62.4
 #kubeadm init | tee kube-init.log
-
+# you will also have to install a network such as weave-net
+#kubectl apply -f https://git.io/weave-kube

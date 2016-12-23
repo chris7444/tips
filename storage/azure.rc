@@ -1,0 +1,5 @@
+STORAGE_ACCOUNT=chris7444
+STORAGE_KEY=BtEbgcM93f/TEAR/7l2QNn6wzhnP+7HIOD0RuN0UGGJxh6ha/deLQjOlLorx31WCvMKfaC9bHGlZTxJfsIVsVQ==
+STORAGE_ENDPOINT=https://chris7444.blob.core.windows.net/
+STORAGE_CONTAINER=docker-storage
+

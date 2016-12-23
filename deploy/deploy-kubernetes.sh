@@ -10,17 +10,16 @@ CIDR="10.6.0.0/16"
 SUBNET="subnet-kube"
 FIP="fip-kube"
 
-
 CERT="azure.pub"
 
 NB_WORKERS=2
 NSG="nsg-kube"
 
 MASTER="master"
-MASTER_SIZE="Basic_A1"
+MASTER_SIZE="Standard_A1_v2"
 
 WORKER="worker"
-WORKER_SIZE="Basic_A1"
+WORKER_SIZE="Standard_A1_v2"
 
 #
 # delete everything from the previous run
